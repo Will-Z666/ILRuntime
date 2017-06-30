@@ -36,7 +36,7 @@ namespace TestCases
 
             Console.WriteLine("TestCls.TestVal2 = " + cls.TestVal2);
 
-            
+
             ClassInheritanceTest.Test3(cls);
             ClassInheritanceTest.Test3(cls2);
             ClassInheritanceTest.Test3(cls3);
@@ -96,7 +96,7 @@ namespace TestCases
             }
         }
 
-        
+
     }
     class TestCls : ClassInheritanceTest
     {
@@ -170,4 +170,255 @@ namespace TestCases
             base.TestVirtual();
         }
     }
+
+    interface IAs1
+    {
+        void AA1();
+    }
+
+    class AABase : IDisposable
+    {
+        public void AA1()
+        {
+            Console.WriteLine("AABase");
+        }
+
+        public void Dispose()
+        {
+        }
+    }
+
+    class AA : AABase
+    {
+        public void AA1()
+        {
+            Console.WriteLine("AA1");
+        }
+    }
+
+    class BB : ILRuntimeTest.TestFramework.ClassInheritanceTest, IAs1
+    {
+        public void AA1()
+        {
+            Console.WriteLine("AA1");
+        }
+
+        public override void TestAbstract()
+        {
+            Console.WriteLine("BB");
+        }
+    }
+
+    public class Parent
+    {
+
+    }
+
+    public interface IAwake
+    {
+        void Awake();
+    }
+
+    public class Child : Parent, IAwake
+    {
+        public void Awake()
+        {
+        }
+    }
+
+    class TestAs
+    {
+        public static bool TestAs01()
+        {
+            AA aa = new AA();
+            if (aa is IAs1)
+            {
+                throw new Exception("error");
+            }
+            return true;
+        }
+
+        public static bool TestAs02()
+        {
+            AA aa = new AA();
+            IAs1 ias = aa as IAs1;
+            if (ias != null)
+            {
+                throw new Exception("error");
+            }
+            return true;
+        }
+
+        public static bool TestAs03()
+        {
+            BB aa = new BB();
+            Dictionary<int, BB> dic = new Dictionary<int, BB>();
+            dic[0] = aa;
+            IAs1 ias = dic[0] as IAs1;
+            if (ias == null)
+            {
+                throw new Exception("error");
+            }
+            else
+                ias.AA1();
+            ClassInheritanceTest id = dic[0] as ClassInheritanceTest;
+            if (id == null)
+            {
+                throw new Exception("error2");
+            }
+            else
+                id.TestAbstract();
+            return true;
+        }
+        public static bool TestAs04()
+        {
+            object child = new Child();
+            IAwake awake = child as IAwake;
+            if (awake == null)
+            {
+                Console.WriteLine("as fail!");
+                throw new Exception("error");
+            }
+            return true;
+        }
+    }
+
+
+
+    class TestIs
+    {
+        public class Base
+        {
+            public virtual int Value()
+            {
+                return 0;
+            }
+        }
+
+        public class Base2 : Base
+        {
+
+        }
+
+        public class Base3 : Base2
+        {
+
+        }
+
+        public static bool TestIs01()
+        {
+            AA aa = new AA();
+            if (aa is IAs1)
+            {
+                throw new Exception("error");
+            }
+            return true;
+        }
+
+        public static bool TestIs02()
+        {
+            AA aa = new AA();
+            if (aa is AABase == false)
+            {
+                throw new Exception("error");
+            }
+            return true;
+        }
+
+        public static bool TestIs03()
+        {
+            AA aa = new AA();
+            if (aa is IDisposable == false)
+            {
+                throw new Exception("error");
+            }
+            return true;
+        }
+
+        public static bool TestIs04()
+        {
+            IDisposable aa = new AA();
+            if (aa is AABase == false)
+            {
+                throw new Exception("error");
+            }
+            return true;
+        }
+
+        public static bool TestIs05()
+        {
+            Base aa = new Base3();
+            if (aa is Base2 == false)
+            {
+                throw new Exception("error");
+            }
+            return true;
+        }
+
+
+    }
+
+    public class TestVirtual
+    {
+        public class Base
+        {
+            public virtual int Value()
+            {
+                return 0;
+            }
+        }
+
+        public class Base2 : Base
+        {
+            public override int Value()
+            {
+                return 2;
+            }
+        }
+
+        public class Base3 : Base2
+        {
+
+        }
+
+        public static bool TestVirtualMethod01()
+        {
+            Base aa = new Base3();
+
+            if (aa.Value() == 2)
+            {
+                return true;
+            }
+
+            throw new Exception("error");
+
+        }
+
+        public static bool TestVirtualMethod02()
+        {
+            Base aa = new Base2();
+
+            if (aa.Value() == 2)
+            {
+                return true;
+            }
+
+            throw new Exception("error");
+
+        }
+
+        public static bool TestVirtualMethod03()
+        {
+            Base2 aa = new Base2();
+
+            if (aa.Value() == 2)
+            {
+                return true;
+            }
+
+            throw new Exception("error");
+
+        }
+    }
+
 }
